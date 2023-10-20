@@ -1,4 +1,3 @@
-// 매개변수 객체 만들기를 적용해서 리팩토링 해주세요.
 const studentTestData = [
   {
     id: 1,
