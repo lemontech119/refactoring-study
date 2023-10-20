@@ -80,6 +80,7 @@ export const addUser = (user: AddUser): User => {
   localUserDb.push(newUser);
 
   console.log(
+    user.email,
     "-----------------------\n회원 가입을 축하드립니다.\n회원가입 축하 메일 대신 console을 사용\n-----------------------"
   );
 
@@ -138,6 +139,8 @@ export const deleteUser = (d: DeleteUser): boolean => {
   }
 
   localUserDb[c].isDelete = true;
+
+  console.log(localUserDb[c].email, "지금까지 즐거웠습니다. ㅠㅠ");
 
   return true;
 };
