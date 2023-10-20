@@ -10,6 +10,7 @@ export const checkBaseballNumber = (
 ): BaseballResult => {
   let strikes = 0;
   let balls = 0;
+  let resultMessage = "";
 
   for (let i = 0; i < answer.length; i++) {
     if (answer[i] === guess[i]) {
@@ -19,7 +20,6 @@ export const checkBaseballNumber = (
     }
   }
 
-  let resultMessage = "";
   if (strikes === answer.length) {
     resultMessage = "삼진 아웃!";
   } else if (strikes === 0 && balls === 0) {
