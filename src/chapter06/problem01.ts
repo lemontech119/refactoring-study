@@ -8,18 +8,9 @@ export const checkBaseballNumber = (
   answer: string,
   guess: string
 ): BaseballResult => {
-  let strikes = 0;
-  let balls = 0;
+  const { strikes, balls } = compare(guess, answer);
+
   let resultMessage = "";
-
-  for (let i = 0; i < answer.length; i++) {
-    if (answer[i] === guess[i]) {
-      strikes++;
-    } else if (answer.includes(guess[i])) {
-      balls++;
-    }
-  }
-
   if (strikes === answer.length) {
     resultMessage = "삼진 아웃!";
   } else if (strikes === 0 && balls === 0) {
@@ -34,3 +25,15 @@ export const checkBaseballNumber = (
     resultMessage,
   };
 };
+
+export const compare = (guess:string, answer:string): {[key:string]:number} => {
+  let result = {strikes:0, balls:0};
+  for (let i = 0, j = answer.length; i < j; i++) {
+    if (answer[i] === guess[i]) {
+      result.strikes++;
+    } else if (answer.includes(guess[i])) {
+      result.balls++;
+    }
+  }
+  return result;
+}

@@ -29,32 +29,31 @@ export const localProductDb: Product[] = [
   },
 ];
 
+export const getProductById = (id:number):Product => {
+  let result:Product|undefined;
+  result = localProductDb.find(
+    (product) => product.productId === id
+  );
+  if (!result) {
+    throw new Error("상품을 찾을 수 없습니다.");
+  }
+  return result;
+}
+
 export const calculateNetProfitByProductId = (productId: number): number => {
   const venderFeePercent = 3;
   const deliveryFee = 3000;
-  const product = localProductDb.find(
-    (product) => product.productId === productId
-  );
-  if (!product) {
-    throw new Error("상품을 찾을 수 없습니다.");
+  const product = getProductById(productId);
+  const totalFeePercent = product.taxFeePercent + venderFeePercent;
+  const salePrice = product.salePrice * (100-totalFeePercent)/100;
+
+  let netProfit:number;
+  netProfit = salePrice - product.supplyPrice;
+  if (!product.isFreeShipping) {
+    netProfit -= deliveryFee;
   }
 
-  if (product.isFreeShipping) {
-    return (
-      product.salePrice -
-      product.supplyPrice -
-      product.salePrice * (product.taxFeePercent / 100) -
-      product.salePrice * (venderFeePercent / 100)
-    );
-  }
-
-  return (
-    product.salePrice -
-    product.supplyPrice -
-    product.salePrice * (product.taxFeePercent / 100) -
-    product.salePrice * (venderFeePercent / 100) -
-    deliveryFee
-  );
+  return netProfit;
 };
 
 export const getCustomerTotalChargeByProductId = (
@@ -62,17 +61,14 @@ export const getCustomerTotalChargeByProductId = (
   quantity: number
 ): number => {
   const deliveryFee = 3000;
-  const product = localProductDb.find(
-    (product) => product.productId === productId
-  );
-  if (!product) {
-    throw new Error("상품을 찾을 수 없습니다.");
-  }
+  const product = getProductById(productId);
+
   let totalCharge: number;
-  if (product.isFreeShipping) {
-    totalCharge = product.salePrice * quantity;
-  } else {
-    totalCharge = product.salePrice * quantity + deliveryFee;
+  totalCharge = product.salePrice * quantity;
+
+  if (!product.isFreeShipping) {
+    totalCharge += deliveryFee;
   }
+
   return totalCharge;
 };

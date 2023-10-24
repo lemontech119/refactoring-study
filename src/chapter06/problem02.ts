@@ -51,7 +51,7 @@ export const localUserDb: User[] = [
   },
 ];
 
-export const addUser = (user: AddUser): User => {
+export function validateUser(user) {
   if (user.password !== user.passwordConfirm) {
     throw new Error("비밀번호가 일치하지 않습니다.");
   }
@@ -67,6 +67,12 @@ export const addUser = (user: AddUser): User => {
       throw new Error("이미 존재하는 이름입니다.");
     }
   }
+}
+
+export const addUser = (user: AddUser): User => {
+
+  this.validateUser(user);
+
   const newId = localUserDb.length + 1;
 
   const newUser = {

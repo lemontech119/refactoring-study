@@ -1,38 +1,53 @@
-const studentTestData = [
+export type Score = {
+  mathScore: number;
+    scienceScore: number,
+    historyScore: number,
+    englishScore: number
+}
+
+export type StudentInfo = {
+  id: number;
+  score: Score
+}
+
+const studentTestData:StudentInfo[] = [
   {
     id: 1,
-    mathScore: 100,
-    scienceScore: 100,
-    historyScore: 100,
-    englishScore: 100,
+    score: {
+      mathScore: 100,
+      scienceScore: 100,
+      historyScore: 100,
+      englishScore: 100
+    }
   },
   {
     id: 2,
-    mathScore: 50,
-    scienceScore: 50,
-    historyScore: 50,
-    englishScore: 50,
-  },
+    score: {
+      mathScore: 50,
+      scienceScore: 50,
+      historyScore: 50,
+      englishScore: 50
+    }
+  }
 ];
 
-const totalSummationOfScores = (
-  mathScore: number,
-  scienceScore: number,
-  historyScore: number,
-  englishScore: number
-): number => {
-  let summationResult = mathScore + scienceScore + historyScore + englishScore;
-  return summationResult;
+const sumScore = (score:{ [key:string ]: number}): number => {
+  const scoreList = Object.values(score);
+  let total=0;
+  for (let i=0,j=scoreList.length;i<j;i++) {
+    total += scoreList[i];
+  }
+  return total;
 };
 
-const deduceLetterFromNumericalValue = (summationResult: number): string => {
-  if (summationResult >= 380) {
+const setGrade = (totalScore: number): string => {
+  if (totalScore >= 380) {
     return "A";
-  } else if (summationResult >= 300) {
+  } else if (totalScore >= 300) {
     return "B";
-  } else if (summationResult >= 250) {
+  } else if (totalScore >= 250) {
     return "C";
-  } else if (summationResult >= 200) {
+  } else if (totalScore >= 200) {
     return "D";
   } else {
     return "F";
@@ -40,16 +55,16 @@ const deduceLetterFromNumericalValue = (summationResult: number): string => {
 };
 
 export const getStudentGradeById = (id: number): string => {
+  const student = getStudent(id);
+  const totalScore = sumScore(student.score);
+  const grade = setGrade(totalScore);
+  return grade;
+};
+
+export const getStudent = (id:number):StudentInfo => {
   const student = studentTestData.find((student) => student.id === id);
   if (!student) {
     throw new Error("학생을 찾을 수 없습니다.");
   }
-  const totalScore = totalSummationOfScores(
-    student.mathScore,
-    student.scienceScore,
-    student.historyScore,
-    student.englishScore
-  );
-  const grade = deduceLetterFromNumericalValue(totalScore);
-  return grade;
-};
+  return student;
+}
