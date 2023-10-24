@@ -1,0 +1,41 @@
+<p>hospital-system works!</p>
+<h2>List of Doctor</h2>
+<ul>
+  <li *ngFor='let doctor of doctors'>
+    <p>name: {{doctor.name}}</p>
+    <button (click)='checkAppointments(doctor)'>check appointments</button>
+    <div *ngIf='doctor.isView'>
+      <ol>
+        <li *ngFor='let appointment of doctor.appointments'>
+          <p> date: {{appointment.date}}</p>
+          <p> time: {{appointment.time}}</p>
+          <p> patient ID: {{appointment.patientId}}</p>
+        </li>
+      </ol>
+    </div>
+  </li>
+</ul>
+
+<h2>List of Patient</h2>
+<ul>
+  <li *ngFor='let  patient of patients'>
+    <p>name: {{patient.name}}</p>
+    <p *ngFor='let appointment of patient.appointments'>doctor ID: {{appointment.doctorId}}</p>
+  </li>
+
+</ul>
+
+<h2>make a doctor's appointmen</h2>
+<h3>list of patient</h3>
+<div *ngFor='let patient of patients'>
+  <label [for]='"patient-name"+ patient.id'>{{patient.name}}</label>
+  <input type='radio' name='patientName' [id]='"patient-name"+ patient.id' [value]='patient.id' (change)='onSelectPatient(patient.id)'>
+</div>
+<h3>list of doctor</h3>
+<div *ngFor='let doctor of doctors'>
+  <label [for]='"doctor-name"+ doctor.id'>{{doctor.name}}</label>
+  <input type='radio' name='doctorName' [id]='"doctor-name"+ doctor.id' [value]='doctor.id' (change)='onSelectDoctor(doctor.id)'>
+</div>
+<label></label>
+<input type='datetime-local' [(ngModel)]='reservationDate'>
+<button (click)='makeDoctorAppointment()'>apply reservation</button>
