@@ -1,0 +1,20 @@
+<h2>Price Create</h2>
+<label for='id'>id </label>
+<input id='id' [(ngModel)]='tempProduct.id'>
+<label for='name'>name </label>
+<input id='name' [(ngModel)]='tempProduct.name'>
+<label for='price'>price </label>
+<input id='price' [(ngModel)]='tempProduct.price'>
+<button (click)='addProduct(tempProduct)'>create price</button>
+
+<h2>Reciept</h2>
+<ol>
+  <ng-container *ngFor='let product of products'>
+    <li>id: {{product.id}}</li>
+    <li>name: {{product.name}}</li>
+    <li>price: {{product.price}}</li>
+  </ng-container>
+  <button (click)='printReceipt()'>calculate total price</button>
+  <h3 *ngIf='totalPrice'>total price: {{totalPrice}}</h3>
+</ol>
+<router-outlet></router-outlet>
