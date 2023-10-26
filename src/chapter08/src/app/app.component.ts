@@ -42,6 +42,16 @@ export class AppComponent {
     return total;
   }
 
+  removeProduct(productId: string): void {
+    const index = this.products.findIndex(product => product.id === productId);
+    if (index !== -1) {
+      const product = this.products.splice(index, 1);
+      console.log(`Product removed: ${product[0].name}`);
+    } else {
+      console.log('Product not found in the cart');
+    }
+  }
+
   private isProductInStock(product: Product): boolean {
     // Dummy stock check implementation
     return product.id.startsWith('item');
@@ -55,5 +65,9 @@ export class AppComponent {
     this.totalPrice = this.calculateTotalPrice();
   }
 
-  // ... (Other methods) ...
+    clearCart(): void {
+        this.products.length = 0;  // This effectively empties the array.
+        console.log('The cart has been cleared');
+    }
+
 }
