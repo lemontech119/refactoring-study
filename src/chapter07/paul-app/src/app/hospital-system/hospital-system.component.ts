@@ -1,27 +1,7 @@
 import { Component } from '@angular/core';
-
-type Appointment = {
-  date: string;
-  time: string;
-  patientId: number;
-  doctorId: number;
-};
-
-type Patient = {
-  id: number;
-  name: string;
-  appointments: Appointment[];
-};
-
-type Doctor = {
-  id: number;
-  name: string;
-  appointments: Appointment[];
-};
-
-type DoctorForView = Doctor & {
-  isView: boolean
-}
+import { Patient } from '../class/Patient';
+import { Appointment } from '../class/Appointment';
+import { DoctorForView } from '../class/DoctorForView';
 
 @Component({
   selector: 'app-hospital-system',
@@ -39,7 +19,7 @@ export class HospitalSystemComponent {
   }
 
   ngOnInit() {
-    this.patients = [{
+    const serverPatients = [{
       id: 1,
       name: 'John Doe',
       appointments: [
@@ -78,20 +58,20 @@ export class HospitalSystemComponent {
         name: 'Becky Green',
         appointments: []
       }];
-    this.doctors = [
-      {
-        id: 101,
-        name: 'Dr. Smith',
-        appointments: [
-          {
-            date: '2023-10-22',
-            time: '10:00',
-            patientId: 1,
-            doctorId: 101
-          }
-        ],
-        isView: false
-      },
+
+    const serverDoctor = [{
+      id: 101,
+      name: 'Dr. Smith',
+      appointments: [
+        {
+          date: '2023-10-22',
+          time: '10:00',
+          patientId: 1,
+          doctorId: 101
+        }
+      ],
+      isView: false
+    },
       {
         id: 102,
         name: 'Dr. Paul',
@@ -106,26 +86,34 @@ export class HospitalSystemComponent {
         isView: false
       }
     ];
+
+    for (let data of serverPatients) {
+      this.patients.push(new Patient(data));
+    }
+    for (let data of serverDoctor) {
+      const doctor: DoctorForView = new DoctorForView(data);
+      this.doctors.push(doctor);
+    }
   }
 
   checkAppointments(doctor: DoctorForView) {
-    doctor.isView = !doctor.isView;
+    doctor.checkView();
   }
 
   makeDoctorAppointment() {
-    const patient = this.patients.find((pat)=> pat.id === this.selectedPatientId)
-    const doctor =this.doctors.find((doc)=> doc.id === this.selectedDoctorId)
-    const appointment: Appointment = {
+    const patient = this.patients.find((patient) => patient.id === this.selectedPatientId);
+    const doctor = this.doctors.find((doctor) => doctor.id === this.selectedDoctorId);
+    const appointment: Appointment = new Appointment({
       patientId: this.selectedPatientId,
       doctorId: this.selectedDoctorId,
       date: this.reservationDate.split('T')[0],
-      time: this.reservationDate.split('T')[1],
-    };
-    if(patient) {
-      patient.appointments.push(appointment);
+      time: this.reservationDate.split('T')[1]
+    });
+    if (patient) {
+      patient.addAppointment(appointment);
     }
-    if(doctor){
-      doctor.appointments.push(appointment);
+    if (doctor) {
+      doctor.addAppointment(appointment);
     }
   }
 
