@@ -1,0 +1,47 @@
+<ion-content >
+  <ion-accordion-group>
+    <ion-accordion *ngFor="let category of categoryList" [value]="category.title">
+      <ion-item slot="header" [ngClass]="category.isClear?'category':''" >
+        <ion-icon slot='start' name="close-outline" (click)="deleteCategory($event, category.title)"></ion-icon>
+        <ion-label>{{category.title+' ('+category.done+'/'+(category.done+category.undone)+')'}}</ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <ion-list>
+          <ion-item *ngFor="let todo of category.list">
+            <ion-icon slot='start' name="close-outline" (click)="deleteTodo(category.title,todo.name)"></ion-icon>
+            <ion-label>
+              {{ todo.name }}
+            </ion-label>
+            <ion-checkbox [(ngModel)]="todo.isDone" (ngModelChange)="checkDone(category)"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button id='present-category'>
+        <ion-icon name="document-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-alert
+        trigger="present-category"
+        header="Add CATEGORY"
+        [buttons]="categoryAlertButtons"
+        [inputs]="categoryAlertInputs"
+      ></ion-alert>
+      <ion-fab-button id='present-todo'>
+        <ion-icon name="documents-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-alert
+        trigger="present-todo"
+        header="Add TODO"
+        [buttons]="todoAlertButtons"
+        [inputs]="todoAlertInputs"
+      ></ion-alert>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
