@@ -3,7 +3,7 @@
     <ion-accordion *ngFor="let category of categoryList" [value]="category.title">
       <ion-item slot="header" [ngClass]="category.isClear?'category':''" >
         <ion-icon slot='start' name="close-outline" (click)="deleteCategory($event, category.title)"></ion-icon>
-        <ion-label>{{category.title+' ('+category.done+'/'+(category.done+category.undone)+')'}}</ion-label>
+        <ion-label>{{category.title+' ('+category.done+'/'+(category.total)+')'}}</ion-label>
       </ion-item>
       <div class="ion-padding" slot="content">
         <ion-list>
@@ -12,7 +12,7 @@
             <ion-label>
               {{ todo.name }}
             </ion-label>
-            <ion-checkbox [(ngModel)]="todo.isDone" (ngModelChange)="checkDone(category)"></ion-checkbox>
+            <ion-checkbox [(ngModel)]="todo.isDone"></ion-checkbox>
           </ion-item>
         </ion-list>
       </div>
