@@ -1,24 +1,29 @@
 <h2>Price Create</h2>
-<label for='id'>id </label>
-<input id='id' [(ngModel)]='tempProduct.id'>
-<label for='name'>name </label>
-<input id='name' [(ngModel)]='tempProduct.name'>
-<label for='price'>price </label>
-<input id='price' [(ngModel)]='tempProduct.price'>
-<button (click)='addProduct(tempProduct)'>create price</button>
+<label for="id">id </label>
+<input id="id" [(ngModel)]="tempProduct.id" />
+<label for="name">name </label>
+<input id="name" [(ngModel)]="tempProduct.name" />
+<label for="price">price </label>
+<input id="price" [(ngModel)]="tempProduct.price" />
+<button (click)="cart.addProduct(tempProduct)">create price</button>
 
 <h2>Reciept</h2>
-<ng-container *ngFor='let product of products'>
+<ng-container *ngFor="let product of cart.products">
   <ul>
-    <div style='display: flex'>
-      <li>id: {{product.id}}</li>
-      <button style='margin-left: 10px' (click)='removeProduct(product.id)'>REMOVE</button>
+    <div style="display: flex">
+      <li>id: {{ product.id }}</li>
+      <button
+        style="margin-left: 10px"
+        (click)="cart.removeProduct(product.id)"
+      >
+        REMOVE
+      </button>
     </div>
-    <li>name: {{product.name}}</li>
-    <li>price: {{product.price}}</li>
+    <li>name: {{ product.name }}</li>
+    <li>price: {{ product.price }}</li>
   </ul>
 </ng-container>
-<button (click)='clearCart()'>clean cart</button>
-<button (click)='printReceipt()'>calculate total price</button>
-<h3 *ngIf='totalPrice'>total price: {{totalPrice}}</h3>
+<button (click)="cart.clear()">clean cart</button>
+<button (click)="printReceipt()">calculate total price</button>
+<h3 *ngIf="totalPrice">total price: {{ totalPrice }}</h3>
 <router-outlet></router-outlet>

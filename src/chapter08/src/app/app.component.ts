@@ -1,73 +1,82 @@
 import { Component } from '@angular/core';
 
-interface Product {
+export interface IProduct {
   id: string;
   name: string;
   price: number;
 }
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
-})
-export class AppComponent {
-  title = 'chapter08';
-  public products: Product[] = [];
-  public tempProduct: Product;
-  public readyToRender = false;
-  public totalPrice = 0;
+export class Product {
+  private PRODUCT_ID_PREFIX = 'item';
 
-  constructor() {
-    this.tempProduct = { id: '', name: '', price: 0 };
-    this.readyToRender = true;
+  constructor(public id: string, public name: string, public price: number) {
+    this.id = id;
+    this.name = name;
+    this.price = price;
   }
 
-  addProduct(product: Product): void {
-    if (!this.isProductInStock(product)) {
-      console.error('Product is not in stock');
-      return;
+  public isValidItemId(): boolean {
+    return this.id.startsWith(this.PRODUCT_ID_PREFIX);
+  }
+}
+
+export class Cart {
+  public products: Product[] = [];
+
+  addProduct(product: IProduct): void {
+    const newProduct = new Product(product.id, product.name, product.price);
+    if (newProduct.isValidItemId()) {
+      this.products.push(newProduct);
     }
-
-
-    this.products.push({ ...product });
-    console.log(`Product added: ${product.name}`);
   }
 
   calculateTotalPrice(): number {
-    let total = 0;
-    for (const product of this.products) {
-      total += +product.price;
-    }
-    return total;
+    let totalPrice = 0;
+    this.products.forEach((product) => {
+      totalPrice += +product.price;
+    });
+
+    return totalPrice;
   }
 
   removeProduct(productId: string): void {
-    const index = this.products.findIndex(product => product.id === productId);
+    const index = this.products.findIndex(
+      (product) => product.id === productId
+    );
     if (index !== -1) {
-      const product = this.products.splice(index, 1);
-      console.log(`Product removed: ${product[0].name}`);
-    } else {
-      console.log('Product not found in the cart');
+      this.products.splice(index, 1);
     }
   }
 
-  private isProductInStock(product: Product): boolean {
-    // Dummy stock check implementation
-    return product.id.startsWith('item');
+  clear(): void {
+    this.products.length = 0;
+  }
+}
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+})
+export class AppComponent {
+  title = 'chapter08';
+  public cart: Cart = new Cart();
+  public tempProduct: IProduct;
+  public readyToRender = false;
+  public totalPrice = 0;
+  // private readonly
+
+  constructor() {
+    this.tempProduct = {
+      id: '',
+      name: '',
+      price: 0,
+    };
+    this.cart = new Cart();
+    this.readyToRender = true;
   }
 
   printReceipt(): void {
-    console.log('--- Receipt ---');
-    for (const product of this.products) {
-      console.log(`${product.name}: $${product.price}`);
-    }
-    this.totalPrice = this.calculateTotalPrice();
+    this.totalPrice = this.cart.calculateTotalPrice();
   }
-
-    clearCart(): void {
-        this.products.length = 0;  // This effectively empties the array.
-        console.log('The cart has been cleared');
-    }
-
 }
