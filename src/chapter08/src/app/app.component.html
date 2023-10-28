@@ -1,14 +1,14 @@
 <h2>Price Create</h2>
 <label for='id'>id </label>
-<input id='id' [(ngModel)]='tempProduct.id'>
+<input id='id' [(ngModel)]='productInfo.id'>
 <label for='name'>name </label>
-<input id='name' [(ngModel)]='tempProduct.name'>
+<input id='name' [(ngModel)]='productInfo.name'>
 <label for='price'>price </label>
-<input id='price' [(ngModel)]='tempProduct.price'>
-<button (click)='addProduct(tempProduct)'>create price</button>
+<input type='number' id='price' [(ngModel)]='productInfo.price'>
+<button (click)='addProduct()'>create price</button>
 
 <h2>Reciept</h2>
-<ng-container *ngFor='let product of products'>
+<ng-container *ngFor='let product of receipt.list'>
   <ul>
     <div style='display: flex'>
       <li>id: {{product.id}}</li>
@@ -18,7 +18,7 @@
     <li>price: {{product.price}}</li>
   </ul>
 </ng-container>
-<button (click)='clearCart()'>clean cart</button>
+<button (click)='clearReceipt()'>clean cart</button>
 <button (click)='printReceipt()'>calculate total price</button>
-<h3 *ngIf='totalPrice'>total price: {{totalPrice}}</h3>
+<h3 *ngIf='receipt'>total price: {{receipt.totalPrice}}</h3>
 <router-outlet></router-outlet>

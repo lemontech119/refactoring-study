@@ -1,10 +1,5 @@
 import { Component } from '@angular/core';
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-}
+import { Product, Receipt } from './product';
 
 @Component({
   selector: 'app-root',
@@ -13,61 +8,33 @@ interface Product {
 })
 export class AppComponent {
   title = 'chapter08';
-  public products: Product[] = [];
-  public tempProduct: Product;
+  public receipt:Receipt;
+  public productInfo = {id:'' ,name:'' ,price:0};
   public readyToRender = false;
-  public totalPrice = 0;
 
   constructor() {
-    this.tempProduct = { id: '', name: '', price: 0 };
+    this.receipt = new Receipt();
     this.readyToRender = true;
   }
 
-  addProduct(product: Product): void {
-    if (!this.isProductInStock(product)) {
-      console.error('Product is not in stock');
-      return;
-    }
-
-
-    this.products.push({ ...product });
-    console.log(`Product added: ${product.name}`);
+  addProduct(): void {
+    const product = new Product(this.productInfo);
+    this.receipt.addProduct(product);
   }
 
-  calculateTotalPrice(): number {
-    let total = 0;
-    for (const product of this.products) {
-      total += +product.price;
-    }
-    return total;
-  }
-
-  removeProduct(productId: string): void {
-    const index = this.products.findIndex(product => product.id === productId);
-    if (index !== -1) {
-      const product = this.products.splice(index, 1);
-      console.log(`Product removed: ${product[0].name}`);
-    } else {
-      console.log('Product not found in the cart');
-    }
-  }
-
-  private isProductInStock(product: Product): boolean {
-    // Dummy stock check implementation
-    return product.id.startsWith('item');
+  removeProduct(id: string): void {
+    this.receipt.removeProduct(id);
   }
 
   printReceipt(): void {
     console.log('--- Receipt ---');
-    for (const product of this.products) {
+    for (const product of this.receipt.list) {
       console.log(`${product.name}: $${product.price}`);
     }
-    this.totalPrice = this.calculateTotalPrice();
   }
 
-    clearCart(): void {
-        this.products.length = 0;  // This effectively empties the array.
-        console.log('The cart has been cleared');
-    }
-
+  clearReceipt(): void {
+      this.receipt.clear();
+      console.log('The cart has been cleared');
+  }
 }
