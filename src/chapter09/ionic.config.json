@@ -1,0 +1,7 @@
+{
+  "name": "refactoring",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
