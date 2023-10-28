@@ -1,10 +1,5 @@
 import { Component } from '@angular/core';
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-}
+import { Product, ProductData } from '../class/Product';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +9,7 @@ interface Product {
 export class AppComponent {
   title = 'chapter08';
   public products: Product[] = [];
-  public tempProduct: Product;
+  public tempProduct: ProductData;
   public readyToRender = false;
   public totalPrice = 0;
 
@@ -23,23 +18,17 @@ export class AppComponent {
     this.readyToRender = true;
   }
 
-  addProduct(product: Product): void {
-    if (!this.isProductInStock(product)) {
-      console.error('Product is not in stock');
+  addProduct(product: ProductData): void {
+    const tempProduct = new Product(product);
+    if (!tempProduct.idVerifier()) {
+      console.error('Product1 is not in stock');
       return;
     }
-
-
-    this.products.push({ ...product });
-    console.log(`Product added: ${product.name}`);
+    this.products.push(tempProduct);
   }
 
   calculateTotalPrice(): number {
-    let total = 0;
-    for (const product of this.products) {
-      total += +product.price;
-    }
-    return total;
+    return this.products.reduce((previousValue, currentValue) => +previousValue + +currentValue.price, 0);
   }
 
   removeProduct(productId: string): void {
@@ -48,26 +37,17 @@ export class AppComponent {
       const product = this.products.splice(index, 1);
       console.log(`Product removed: ${product[0].name}`);
     } else {
-      console.log('Product not found in the cart');
+      console.log('Product1 not found in the cart');
     }
   }
 
-  private isProductInStock(product: Product): boolean {
-    // Dummy stock check implementation
-    return product.id.startsWith('item');
-  }
 
   printReceipt(): void {
-    console.log('--- Receipt ---');
-    for (const product of this.products) {
-      console.log(`${product.name}: $${product.price}`);
-    }
-    this.totalPrice = this.calculateTotalPrice();
+    this.totalPrice = this.calculateTotalPrice()
   }
 
-    clearCart(): void {
-        this.products.length = 0;  // This effectively empties the array.
-        console.log('The cart has been cleared');
-    }
+  clearCart(): void {
+    this.products.length = 0;
+  }
 
 }
