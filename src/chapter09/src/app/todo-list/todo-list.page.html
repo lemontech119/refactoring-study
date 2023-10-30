@@ -1,18 +1,33 @@
-<ion-content >
+<ion-content>
   <ion-accordion-group>
-    <ion-accordion *ngFor="let category of categoryList" [value]="category.title">
-      <ion-item slot="header" [ngClass]="category.isClear?'category':''" >
-        <ion-icon slot='start' name="close-outline" (click)="deleteCategory($event, category.title)"></ion-icon>
-        <ion-label>{{category.title+' ('+category.done+'/'+(category.done+category.undone)+')'}}</ion-label>
+    <ion-accordion
+      *ngFor="let category of categoryList"
+      [value]="category.title"
+    >
+      <ion-item slot="header" [ngClass]="category.isClear?'category':''">
+        <ion-icon
+          slot="start"
+          name="close-outline"
+          (click)="todo.deleteCategory($event, category.title)"
+        ></ion-icon>
+        <ion-label
+          >{{category.title+'
+          ('+category.done+'/'+(category.done+category.undone)+')'}}</ion-label
+        >
       </ion-item>
       <div class="ion-padding" slot="content">
         <ion-list>
-          <ion-item *ngFor="let todo of category.list">
-            <ion-icon slot='start' name="close-outline" (click)="deleteTodo(category.title,todo.name)"></ion-icon>
-            <ion-label>
-              {{ todo.name }}
-            </ion-label>
-            <ion-checkbox [(ngModel)]="todo.isDone" (ngModelChange)="checkDone(category)"></ion-checkbox>
+          <ion-item *ngFor="let subTask of category.list">
+            <ion-icon
+              slot="start"
+              name="close-outline"
+              (click)="todo.deleteSubTask(category.title,subTask.name)"
+            ></ion-icon>
+            <ion-label> {{ subTask.name }} </ion-label>
+            <ion-checkbox
+              [(ngModel)]="subTask.isDone"
+              (ngModelChange)="checkDone(category)"
+            ></ion-checkbox>
           </ion-item>
         </ion-list>
       </div>
@@ -24,7 +39,7 @@
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
-      <ion-fab-button id='present-category'>
+      <ion-fab-button id="present-category">
         <ion-icon name="document-outline"></ion-icon>
       </ion-fab-button>
       <ion-alert
@@ -33,7 +48,7 @@
         [buttons]="categoryAlertButtons"
         [inputs]="categoryAlertInputs"
       ></ion-alert>
-      <ion-fab-button id='present-todo'>
+      <ion-fab-button id="present-todo">
         <ion-icon name="documents-outline"></ion-icon>
       </ion-fab-button>
       <ion-alert
