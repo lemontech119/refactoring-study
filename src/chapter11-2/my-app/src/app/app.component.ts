@@ -17,7 +17,6 @@ export class AppComponent {
   });
   constructor(private userService: UserService) {}
 
-  // 7. 예외 처리 대신 사전 확인 사용 (리팩토링 대상)
   onFindUser(userId: number): void {
     const result = this.userService.findUserById(userId);
     if (typeof result === 'string') {
