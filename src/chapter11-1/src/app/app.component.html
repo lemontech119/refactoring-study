@@ -37,11 +37,12 @@
 <div>
   <hr />
   <h3>테이블링</h3>
-  <div>
-    <span>인원 수: </span><input type="number" [(ngModel)]="peopleCount" />
-    <span> 전화 번호: </span><input type="text" [(ngModel)]="phoneNumber" />
+  <div >
+    {{customers.peopleCount}}
+    <span>인원 수: </span><input type="number" #peopleCount  [value]='customers.peopleCount' (input)='customers.peopleCount = +peopleCount.value'/>
+    <span> 전화 번호: </span><input type="text" #phoneNumber [value]='customers.phoneNumber' (input)='customers.phoneNumber = phoneNumber.value'/>
 
-    <button (click)="doTabling(peopleCount, phoneNumber)">테이블링 이용</button>
+    <button (click)="doTabling()">테이블링 이용</button>
   </div>
 
   <hr />
