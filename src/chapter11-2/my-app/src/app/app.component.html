@@ -1,0 +1,27 @@
+<div>
+  <h1>User Information</h1>
+  <input #userIdInput type='text' placeholder='Enter user ID'>
+  <button (click)='onFindUser(+userIdInput.value)'>Find User</button>
+  <div *ngIf='user'>
+    <p>Id: {{ user?.id }}</p>
+    <p>Name: {{ user?.name }}</p>
+  </div>
+  <div *ngIf='errorMessage' class='error'>
+    {{ errorMessage }}
+  </div>
+
+
+  <div class="container">
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="id">ID:</label>
+      <input type="text" class="form-control" id="id" formControlName="id" required>
+    </div>
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input type="text" class="form-control" id="name" formControlName="name" required>
+    </div>
+    <button type="submit" class="btn btn-success" [disabled]="!userForm.valid">Add User</button>
+  </form>
+</div>
+</div>

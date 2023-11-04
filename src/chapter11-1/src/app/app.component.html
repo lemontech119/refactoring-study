@@ -1,0 +1,57 @@
+<h1>{{ this.store.name }} 테이블링</h1>
+<h3>총 테이블 수: {{ this.store.tableCount }}</h3>
+
+<div style="display: flex">
+  <div style="flex: 1">
+    <div *ngFor="let table of this.tables">
+      <li>table Id: {{ table.id }}</li>
+      <ul>
+        <li>테이블 수용인원: {{ table.maxCapacity }}</li>
+        <li *ngIf="!table.isUsing">사용 가능</li>
+        <li *ngIf="table.isUsing" style="color: red">사용 중</li>
+        <button *ngIf="table.isUsing" (click)="endTable(table.id)">
+          고객님 나가십니다.
+        </button>
+      </ul>
+      <button style="background-color: aqua" (click)="removeTable(table.id)">
+        테이블 삭제
+      </button>
+    </div>
+  </div>
+  <div style="flex: 1">
+    <h3>테이블 추가</h3>
+    <div>
+      <span>테이블 수용 인원: </span>
+      <input type="number" [(ngModel)]="maxCapacity" />
+      <br />
+      <span>테이블 장소명: </span>
+      <input type="string" [(ngModel)]="location" />
+      <br />
+      <button (click)="addTable(store.id, maxCapacity, location)">
+        테이블 추가
+      </button>
+    </div>
+  </div>
+</div>
+
+<div>
+  <hr />
+  <h3>테이블링</h3>
+  <div>
+    <span>인원 수: </span><input type="number" [(ngModel)]="peopleCount" />
+    <span> 전화 번호: </span><input type="text" [(ngModel)]="phoneNumber" />
+
+    <button (click)="doTabling(peopleCount, phoneNumber)">테이블링 이용</button>
+  </div>
+
+  <hr />
+  <h3>예약 목록</h3>
+  <div *ngFor="let reservation of this.reservations">
+    <li>예약 번호: {{ reservation.id }}</li>
+    <ul>
+      <li>예약 인원: {{ reservation.peopleCount }}</li>
+      <li>예약자 전화 번호: {{ reservation.phoneNumber }}</li>
+      <button (click)="cancelReservation(reservation.id)">예약 취소</button>
+    </ul>
+  </div>
+</div>
