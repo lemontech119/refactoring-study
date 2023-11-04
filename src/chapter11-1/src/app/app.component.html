@@ -1,9 +1,9 @@
 <h1>{{ this.store.name }} 테이블링</h1>
-<h3>총 테이블 수: {{ this.store.tableCount }}</h3>
+<h3>총 테이블 수: {{ this.reservation.tables.length }}</h3>
 
 <div style="display: flex">
   <div style="flex: 1">
-    <div *ngFor="let table of this.tables">
+    <div *ngFor="let table of this.reservation.tables">
       <li>table Id: {{ table.id }}</li>
       <ul>
         <li>테이블 수용인원: {{ table.maxCapacity }}</li>
@@ -46,7 +46,7 @@
 
   <hr />
   <h3>예약 목록</h3>
-  <div *ngFor="let reservation of this.reservations">
+  <div *ngFor="let reservation of this.reservation.reservations">
     <li>예약 번호: {{ reservation.id }}</li>
     <ul>
       <li>예약 인원: {{ reservation.peopleCount }}</li>
