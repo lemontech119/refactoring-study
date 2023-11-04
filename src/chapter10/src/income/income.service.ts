@@ -6,20 +6,11 @@ export class IncomeService {
   // 세금 뗀 금액
   // - 수습의 경우 20%를 제외하고 지급합니다.
   getIncomeNotTax(id: number): number {
-    let income = 0;
     const employee = imagineEmployee.find((employee) => employee.id === id);
-    if (employee) {
-      if (employee.role === Role.regular) {
-        if (employee.isProbationary) {
-          income = employee.wage * 0.8;
-        } else {
-          income = employee.wage;
-        }
-      } else {
-        income = employee.wage;
-      }
+    if (!employee) {
+      return;
     }
-    return income;
+    return this.isProbationary(employee) ? employee.wage * 0.8 : employee.wage;
   }
 
   // 세금 포함
@@ -29,26 +20,25 @@ export class IncomeService {
   // - 팀장은 많이 벌어서 20%를 뗍니다.
   // - 이사는 더더더 많이 벌어서 30%를 뗍니다.
   getIncome(id: number): number {
-    let income = 0;
     const employee = imagineEmployee.find((employee) => employee.id === id);
-
-    if (employee) {
-      if (employee.role === Role.partTime) {
-        income = employee.wage;
-      } else if (employee.role === Role.regular) {
-        if (employee.isProbationary) {
-          income = employee.wage * 0.8 * 0.9;
-        } else {
-          income = employee.wage * 0.9;
-        }
-      } else if (employee.role === Role.leader) {
-        income = employee.wage * 0.8;
-      } else if (employee.role === Role.boardMember) {
-        income = employee.wage * 0.7;
-      }
+    if (!employee) {
+      return;
     }
 
-    return income;
+    if (this.isProbationary(employee)) {
+      return employee.wage * 0.8 * 0.9;
+    }
+
+    switch (employee.role) {
+      case Role.partTime :
+        return employee.wage;
+      case Role.leader :
+        return employee.wage*0.8;
+      case Role.boardMember :
+        return employee.wage*0.7;
+      default:
+        return employee.wage*0.9
+    }
   }
 
   // 연봉 협상
@@ -59,64 +49,30 @@ export class IncomeService {
   // - 팀장의 경우 good은 20% 인상, normal은 0% 인상, bad는 -10% 삭감입니다.
   // - 이사는 연봉 협상 대상자가 아닙니다.
   negotiateIncome(id: number): number {
-    let newIncome = 0;
     const employee = imagineEmployee.find((employee) => employee.id === id);
-
-    switch (employee.role) {
-      case Role.regular:
-        if (employee.isProbationary) {
-          if (employee.evaluation === Evaluation.good) {
-            employee.isProbationary = true;
-          }
-          newIncome = employee.wage;
-        } else {
-          if (employee.evaluation === Evaluation.good) {
-            newIncome = employee.wage * 1.1;
-          } else if (employee.evaluation === Evaluation.normal) {
-            newIncome = employee.wage * 1.05;
-          } else if (employee.evaluation === Evaluation.bad) {
-            newIncome = employee.wage;
-          }
-        }
-        break;
-
-      case Role.leader:
-        if (employee.evaluation === Evaluation.good) {
-          newIncome = employee.wage * 1.2;
-        } else if (employee.evaluation === Evaluation.normal) {
-          newIncome = employee.wage;
-        } else if (employee.evaluation === Evaluation.bad) {
-          newIncome = employee.wage * 0.9;
-        }
-        break;
-
-      case Role.partTime:
-        newIncome = employee.wage;
-        break;
-
-      case Role.boardMember:
-        newIncome = employee.wage;
-        break;
+    if (!employee) {
+      return;
     }
 
-    return newIncome;
+    if (this.isProbationary(employee)) {
+      return employee.wage;
+    }
+
+    if(employee.role===Role.regular || employee.role===Role.leader) {
+      return employee.wage * this.getNewIncomeMultiplier(employee.role, employee.evaluation);
+    } else {
+      return employee.wage;
+    }
   }
 
   // 서포터즈 수당
   // - 서포터즈는 100000원의 수당을 받습니다.
   getSupporterIncome(id: number): number {
-    let income = 0;
     const employee = imagineEmployee.find((employee) => employee.id === id);
-
-    if (employee) {
-      if (employee.supporter) {
-        income = 100000;
-      } else {
-        income = 0;
-      }
+    if (!employee) {
+      return;
     }
-
-    return income;
+    return employee.supporter?100000:0;
   }
 
   // https://www.chosun.com/economy/auto/2023/09/12/IVDBKUONOVGFFLEDPSYKFFHF7M/
@@ -125,19 +81,30 @@ export class IncomeService {
   // - 아르바이트는 1050만원 금액을 받습니다.
   // - 이사는 파업 합의금을 받지 않습니다.
   getStrikeSettlementMoney(id: number): number {
-    let money = 0;
     const employee = imagineEmployee.find((employee) => employee.id === id);
-
-    if (employee.role === Role.boardMember) {
-      money = 0;
-    } else if (employee.role === Role.partTime) {
-      money = 10500000;
-    } else if (employee.role === Role.regular) {
-      money = employee.wage * 4 + 10500000;
-    } else if (employee.role === Role.leader) {
-      money = employee.wage * 4 + 10500000;
+    if (!employee) {
+      return;
     }
 
-    return money;
+    switch (employee.role) {
+      case Role.boardMember:
+        return 0;
+      case Role.partTime:
+        return 10500000;
+      case Role.regular:
+      case Role.leader:
+        return employee.wage * 4 + 10500000;
+
+    }
+  }
+
+  isProbationary(employee) {
+    return employee.role === Role.regular && employee.isProbationary;
+  }
+
+  getNewIncomeMultiplier(role, grade) {
+    if (grade===Evaluation.bad) return role===Role.regular?1:0.9;
+    if (grade===Evaluation.normal) return role===Role.regular?1.05:1;
+    if (grade===Evaluation.good) return role===Role.regular?1.1:1.2;
   }
 }

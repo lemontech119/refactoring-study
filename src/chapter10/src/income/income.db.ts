@@ -1,4 +1,4 @@
-export interface Employee {
+export interface IEmployee {
   id: number;
   name: string;
   wage: number;
@@ -21,7 +21,7 @@ export enum Role {
   boardMember = 'boardMember',
 }
 
-export const imagineEmployee: Employee[] = [
+export const imagineEmployee: IEmployee[] = [
   {
     id: 1,
     name: 'A',
