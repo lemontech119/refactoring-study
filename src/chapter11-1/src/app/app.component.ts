@@ -1,114 +1,72 @@
-import { Component } from '@angular/core';
-import { TStore, TTable, TReservation, store, tables } from './db';
+import { Component, OnInit } from '@angular/core';
+import { CustomerStatus, ICustomers } from './interface';
+import { Store } from './store';
+import { Table } from './table';
+import { storeData } from './storeDB';
+import { tableData } from './tableDB';
+import { Customer } from './customer';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
-  public store: TStore = store;
-  public tables: TTable[] = tables;
-  public reservations: TReservation[] = [];
-  public peopleCount = 0;
-  public phoneNumber = '';
-  public maxCapacity = 0;
-  public location = '';
 
-  showAlert(message: string): void {
-    alert(message);
+export class AppComponent implements OnInit{
+  public store: Store;
+  public tables: Table[]=[];
+  public reservations: ICustomers[] = [];
+  public totalCustomerCount = 0;
+  public registerInfo = { peopleCount: 0, phoneNumber:''};
+  public tableInfo = { maxCapacity: 0, location:''};
+
+  constructor() {
+    this.store = new Store(storeData);
   }
 
-  doTabling(peopleCount: number, phoneNumber: string): void {
-    let message = '';
-    if (peopleCount <= 0 || phoneNumber === '') {
-      message = '인원수와 전화번호를 입력해주세요.';
-      this.showAlert(message);
-      return;
-    }
+  ngOnInit() {
+    tableData.forEach((table)=>{
+      this.store.addTable(new Table(table))
+    });
+  }
 
-    const table = this.tables.find(
-      (table) => table.isUsing === false && table.maxCapacity >= peopleCount
-    );
+  doTabling(registerInfo:any): void {
+    const customerInfo = { id:this.totalCustomerCount, peopleCount:registerInfo.peopleCount, phoneNumber:registerInfo.phoneNumber, status:CustomerStatus.waiting};
+    this.store.addCustomer(new Customer(customerInfo));
+    this.resetRegisterInfo();
+  }
 
-    if (table) {
-      table.isUsing = true;
-      message = `${table.location} 테이블에 앉으세요.`;
-      this.peopleCount = 0;
-      this.phoneNumber = '';
-      this.showAlert(message);
-    } else {
-      this.reservations.push({
-        id: this.reservations.length + 1,
-        peopleCount,
-        phoneNumber,
-      });
-      message = '예약이 완료 됐습니다.';
-      this.peopleCount = 0;
-      this.phoneNumber = '';
-      this.showAlert(message);
-    }
+  resetRegisterInfo() {
+    this.registerInfo = { peopleCount: 0, phoneNumber: ''};
   }
 
   cancelReservation(reservationId: number): void {
-    const index = this.reservations.findIndex(
-      (reservation) => reservation.id === reservationId
-    );
-    if (index !== -1) {
-      this.reservations.splice(index, 1);
-    }
+    this.store.removeReservation(reservationId);
   }
 
   endTable(tableId: number): void {
-    const table = this.tables.find((table) => table.id === tableId);
-    if (table) {
-      table.isUsing = false;
-      if (this.reservations.length > 0) {
-        const reservation = this.reservations.shift();
-        if (reservation) {
-          table.isUsing = true;
-          this.showAlert(
-            `${reservation.phoneNumber}님, ${table.location} 테이블에 앉으세요.`
-          );
-        }
-      }
-    }
+    this.store.endTable(tableId);
   }
 
-  addTable(storeId: number, maxCapacity: number, location: string): void {
-    this.tables.push({
-      id: this.tables.length + 1,
-      storeId,
-      maxCapacity,
-      location,
-      isUsing: false,
-    });
+  addTable(tableInfo:any): void {
+    const tableIdList = this.store.tables.map((table)=> {
+      return table.id;
+    })
 
-    this.store.tableCount = this.tables.length;
-    this.peopleCount = 0;
-    this.phoneNumber = '';
+    const tableData = {
+      id: tableIdList[tableIdList.length-1] + 1,
+      storeId: this.store.id,
+      maxCapacity: tableInfo.maxCapacity,
+      location: tableInfo.location,
+      isUsing: false
+    };
 
-    this.showAlert(`${location} 테이블이 추가 됐습니다.`);
+    this.store.addTable(new Table(tableData));
+
+    alert(`${tableInfo.location} 테이블이 추가 됐습니다.`);
   }
 
   removeTable(tableId: number): void {
-    let message = '';
-    const table = this.tables.find((table) => table.id === tableId);
-    if (table) {
-      if (table.isUsing) {
-        message = '사용중인 테이블은 삭제할 수 없습니다.';
-        this.showAlert(message);
-        return;
-      }
-      const index = this.tables.findIndex((table) => table.id === tableId);
-      if (index !== -1) {
-        this.tables.splice(index, 1);
-        message = `${table.location} 테이블이 삭제 됐습니다.`;
-        this.showAlert(message);
-      }
-    } else {
-      let message = '테이블이 없습니다.';
-      this.showAlert(message);
-    }
+    this.store.removeTable(tableId);
   }
 }

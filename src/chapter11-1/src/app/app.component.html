@@ -3,7 +3,7 @@
 
 <div style="display: flex">
   <div style="flex: 1">
-    <div *ngFor="let table of this.tables">
+    <div *ngFor="let table of store.tables">
       <li>table Id: {{ table.id }}</li>
       <ul>
         <li>테이블 수용인원: {{ table.maxCapacity }}</li>
@@ -22,12 +22,12 @@
     <h3>테이블 추가</h3>
     <div>
       <span>테이블 수용 인원: </span>
-      <input type="number" [(ngModel)]="maxCapacity" />
+      <input type="number" [(ngModel)]="tableInfo.maxCapacity" />
       <br />
       <span>테이블 장소명: </span>
-      <input type="string" [(ngModel)]="location" />
+      <input type="string" [(ngModel)]="tableInfo.location" />
       <br />
-      <button (click)="addTable(store.id, maxCapacity, location)">
+      <button (click)="addTable(tableInfo)">
         테이블 추가
       </button>
     </div>
@@ -38,15 +38,15 @@
   <hr />
   <h3>테이블링</h3>
   <div>
-    <span>인원 수: </span><input type="number" [(ngModel)]="peopleCount" />
-    <span> 전화 번호: </span><input type="text" [(ngModel)]="phoneNumber" />
+    <span>인원 수: </span><input type="number" [(ngModel)]="registerInfo.peopleCount" />
+    <span> 전화 번호: </span><input type="text" [(ngModel)]="registerInfo.phoneNumber" />
 
-    <button (click)="doTabling(peopleCount, phoneNumber)">테이블링 이용</button>
+    <button (click)="doTabling(registerInfo)">테이블링 이용</button>
   </div>
 
   <hr />
   <h3>예약 목록</h3>
-  <div *ngFor="let reservation of this.reservations">
+  <div *ngFor="let reservation of store.reservation">
     <li>예약 번호: {{ reservation.id }}</li>
     <ul>
       <li>예약 인원: {{ reservation.peopleCount }}</li>
