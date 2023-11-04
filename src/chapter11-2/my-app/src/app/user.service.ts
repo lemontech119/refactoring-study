@@ -7,17 +7,24 @@ import { User } from './models/user.model';
 export class UserService {
   private users: User[] = [];
 
-  addUser(id: number, name: string): void {
-    const newUser = new User(id, name);
-    this.users.push(newUser);
+  createUser(id: number, name: string): User {
+    return new User(id, name);
   }
 
-  findUserById(id: number ): User | string {
-    const foundUser = this.users.find(user => user.id === id);
-    if (foundUser) {
-      return foundUser;
+  addUser(id: number, name: string): void {
+    try {
+      this.users.push(this.createUser(+id, name));
+    } catch (e) {
+      throw new Error('addUser() Error');
+    }
+  }
+
+  findUserById(id: number ): User {
+    const user = this.users.find(user => user.id === id);
+    if (user) {
+      return user;
     } else {
-      return 'User not found';  // 오류 코드 반환
+      throw new Error('findUserById() Error');
     }
   }
 }

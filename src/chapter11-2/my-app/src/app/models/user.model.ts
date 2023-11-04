@@ -3,8 +3,8 @@ export class User {
   private _name: string;
 
   constructor(id: number, name: string) {
-    this._id = id;
-    this._name = name;
+    this._id = id || -1;
+    this._name = name || 'unknown';
   }
 
   get id(){
@@ -13,9 +13,6 @@ export class User {
 
   get name() {
     return this._name
-  }
-  set id(id: number) {
-    this._id = id;
   }
 
   set name(name: string) {

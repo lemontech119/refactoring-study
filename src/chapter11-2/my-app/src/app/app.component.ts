@@ -9,7 +9,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  user: User | null = null;
+  user: User = new User(-1,'unknown');
   errorMessage: string = '';
   userForm = new FormGroup({
     id: new FormControl('',[Validators.required]),
@@ -18,11 +18,12 @@ export class AppComponent {
   constructor(private userService: UserService) {}
 
   onFindUser(userId: number): void {
-    const result = this.userService.findUserById(userId);
-    if (typeof result === 'string') {
-      this.errorMessage = result;
-    } else {
+    try {
+      const result = this.userService.findUserById(userId);
       this.user = result;
+    } catch (e:any) {
+      this.errorMessage = e.message;
+      throw new Error('onFindUser() Error');
     }
   }
 
@@ -34,6 +35,4 @@ export class AppComponent {
       this.userForm.reset();
     }
   }
-
-
 }
