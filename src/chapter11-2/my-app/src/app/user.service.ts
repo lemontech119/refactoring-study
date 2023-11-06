@@ -8,16 +8,20 @@ export class UserService {
   private users: User[] = [];
 
   addUser(id: number, name: string): void {
-    const newUser = new User(id, name);
+    const newUser = this.newUser(id, name);
     this.users.push(newUser);
+    this.users.map()
   }
 
-  findUserById(id: number ): User | string {
+  newUser(id: number, name: string) {
+    return new User(id, name);
+  }
+
+  findUserById(id: number): User{
     const foundUser = this.users.find(user => user.id === id);
-    if (foundUser) {
-      return foundUser;
-    } else {
-      return 'User not found';  // 오류 코드 반환
+    if (!foundUser) {
+      throw new Error('User not found');
     }
+    return foundUser;
   }
 }

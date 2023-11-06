@@ -14,11 +14,4 @@ export class User {
   get name() {
     return this._name
   }
-  set id(id: number) {
-    this._id = id;
-  }
-
-  set name(name: string) {
-    this._name = name;
-  }
 }

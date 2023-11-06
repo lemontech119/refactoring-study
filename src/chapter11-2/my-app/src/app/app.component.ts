@@ -12,26 +12,40 @@ export class AppComponent {
   user: User | null = null;
   errorMessage: string = '';
   userForm = new FormGroup({
-    id: new FormControl('',[Validators.required]),
+    id: new FormControl('', [Validators.required]),
     name: new FormControl('', [Validators.required])
   });
-  constructor(private userService: UserService) {}
+
+  constructor(private userService: UserService) {
+  }
 
   onFindUser(userId: number): void {
-    const result = this.userService.findUserById(userId);
-    if (typeof result === 'string') {
-      this.errorMessage = result;
-    } else {
-      this.user = result;
+    try {
+      const result = this.userService.findUserById(userId);
+      if (result instanceof User)
+        this.user = result;
+    } catch (e: any) {
+      this.errorMessage = e.message;
     }
+
   }
 
   onSubmit(): void {
-    if (this.userForm.valid) {
-      const { id, name } = this.userForm.value;
-      //@ts-ignore
-      this.userService.addUser(id, name);
-      this.userForm.reset();
+    try {
+      if (this.userForm.valid) {
+        const { id, name } = this.userForm.value;
+        if (!(typeof id === 'number')) {
+          throw new Error('Id is number');
+        }
+        if (typeof name === 'string') {
+          this.userService.addUser(+id, name);
+          this.userForm.reset();
+        } else {
+          throw new Error('Invalid Name');
+        }
+      }
+    } catch (e:any) {
+      this.errorMessage = e.message;
     }
   }
 
